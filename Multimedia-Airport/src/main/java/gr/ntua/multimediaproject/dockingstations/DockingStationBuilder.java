@@ -1,7 +1,5 @@
 package gr.ntua.multimediaproject.dockingstations;
 
-import gr.ntua.multimediaproject.flights.FlightType;
-import gr.ntua.multimediaproject.flights.PlaneType;
 import gr.ntua.multimediaproject.offeredservices.*;
 import gr.ntua.multimediaproject.dockingstations.exceptions.DockingStationException;
 
@@ -16,133 +14,72 @@ public class DockingStationBuilder {
 
     public DockingStationBuilder ofDockingStationType(DockingStationType type) throws DockingStationException{
         Set<OfferedService> offeredServicesSet = new HashSet<>();
-        Set<PlaneType> supportedPlaneTypes = new HashSet<>();
-        Set<FlightType> supportedFlightTypes = new HashSet<>();
         switch(type){
             case GATE:
                 dockingStation = new GateDockingStation();
                 dockingStation.setMaxLandingDurationInMinutes(45);
                 offeredServicesSet.addAll(Arrays.asList(
-                        new RefuelingOfferedService(),
-                        new CleaningOfferedService(),
-                        new PassengerTransitOfferedService(),
-                        new LoadingUnloadingOfferedService()));
-                supportedPlaneTypes.addAll(Arrays.asList(
-                        PlaneType.JET,
-                        PlaneType.TURBOPROP
-                ));
-                supportedFlightTypes.addAll(Arrays.asList(
-                        FlightType.PASSENGER
-                ));
+                        RefuelingOfferedServiceSingleton.getInstance(),
+                        CleaningOfferedServiceSingleton.getInstance(),
+                        PassengerTransitOfferedServiceSingleton.getInstance(),
+                        LoadingUnloadingOfferedServiceSingleton.getInstance()));
                 break;
             case COMMERCIAL_GATE:
                 dockingStation = new CommercialGateDockingStation();
                 dockingStation.setMaxLandingDurationInMinutes(90);
                 offeredServicesSet.addAll(Arrays.asList(
-                        new RefuelingOfferedService(),
-                        new CleaningOfferedService(),
-                        new PassengerTransitOfferedService(),
-                        new LoadingUnloadingOfferedService()));
-                supportedPlaneTypes.addAll(Arrays.asList(
-                        PlaneType.JET,
-                        PlaneType.TURBOPROP
-                ));
-                supportedFlightTypes.addAll(Arrays.asList(
-                        FlightType.COMMERCIAL
-                ));
+                        RefuelingOfferedServiceSingleton.getInstance(),
+                        CleaningOfferedServiceSingleton.getInstance(),
+                        PassengerTransitOfferedServiceSingleton.getInstance(),
+                        LoadingUnloadingOfferedServiceSingleton.getInstance()));
                 break;
             case ZONE_A:
-                dockingStation = new ZoneAGateDockingStation();
+                dockingStation = new ZoneADockingStation();
                 dockingStation.setMaxLandingDurationInMinutes(90);
                 offeredServicesSet.addAll(Arrays.asList(
-                        new RefuelingOfferedService(),
-                        new CleaningOfferedService(),
-                        new PassengerTransitOfferedService(),
-                        new LoadingUnloadingOfferedService()));
-                supportedPlaneTypes.addAll(Arrays.asList(
-                        PlaneType.JET,
-                        PlaneType.TURBOPROP
-                ));
-                supportedFlightTypes.addAll(Arrays.asList(
-                        FlightType.PASSENGER
-                ));
+                        RefuelingOfferedServiceSingleton.getInstance(),
+                        CleaningOfferedServiceSingleton.getInstance(),
+                        PassengerTransitOfferedServiceSingleton.getInstance(),
+                        LoadingUnloadingOfferedServiceSingleton.getInstance()));
                 break;
             case ZONE_B:
-                dockingStation = new ZoneBGateDockingStation();
+                dockingStation = new ZoneBDockingStation();
                 dockingStation.setMaxLandingDurationInMinutes(120);
                 offeredServicesSet.addAll(Arrays.asList(
-                        new RefuelingOfferedService(),
-                        new CleaningOfferedService(),
-                        new PassengerTransitOfferedService(),
-                        new LoadingUnloadingOfferedService()));
-                supportedPlaneTypes.addAll(Arrays.asList(
-                        PlaneType.JET,
-                        PlaneType.TURBOPROP
-                ));
-                supportedFlightTypes.addAll(Arrays.asList(
-                        FlightType.PASSENGER,
-                        FlightType.COMMERCIAL,
-                        FlightType.PRIVATE
-                ));
+                        RefuelingOfferedServiceSingleton.getInstance(),
+                        CleaningOfferedServiceSingleton.getInstance(),
+                        PassengerTransitOfferedServiceSingleton.getInstance(),
+                        LoadingUnloadingOfferedServiceSingleton.getInstance()));
                 break;
             case ZONE_C:
-                dockingStation = new ZoneCGateDockingStation();
+                dockingStation = new ZoneCDockingStation();
                 dockingStation.setMaxLandingDurationInMinutes(180);
                 offeredServicesSet.addAll(Arrays.asList(
-                        new RefuelingOfferedService(),
-                        new CleaningOfferedService(),
-                        new PassengerTransitOfferedService(),
-                        new LoadingUnloadingOfferedService()));
-                supportedPlaneTypes.addAll(Arrays.asList(
-                        PlaneType.SINGLE_ENGINE
-                ));
-                supportedFlightTypes.addAll(Arrays.asList(
-                        FlightType.PASSENGER,
-                        FlightType.COMMERCIAL,
-                        FlightType.PRIVATE
-                ));
+                        RefuelingOfferedServiceSingleton.getInstance(),
+                        CleaningOfferedServiceSingleton.getInstance(),
+                        PassengerTransitOfferedServiceSingleton.getInstance(),
+                        LoadingUnloadingOfferedServiceSingleton.getInstance()));
                 break;
             case GENERAL_DOCKING_STATION:
                 dockingStation = new GeneralDockingStation();
                 dockingStation.setMaxLandingDurationInMinutes(240);
                 offeredServicesSet.addAll(Arrays.asList(
-                        new RefuelingOfferedService(),
-                        new CleaningOfferedService()));
-                supportedPlaneTypes.addAll(Arrays.asList(
-                        PlaneType.JET,
-                        PlaneType.TURBOPROP,
-                        PlaneType.SINGLE_ENGINE
-                ));
-                supportedFlightTypes.addAll(Arrays.asList(
-                        FlightType.PASSENGER,
-                        FlightType.COMMERCIAL,
-                        FlightType.PRIVATE
-                ));
+                        RefuelingOfferedServiceSingleton.getInstance(),
+                        CleaningOfferedServiceSingleton.getInstance()));
                 break;
             case LONG_DURATION:
                 dockingStation = new LongDurationDockingStation();
                 dockingStation.setMaxLandingDurationInMinutes(600);
                 offeredServicesSet.addAll(Arrays.asList(
-                        new RefuelingOfferedService(),
-                        new CleaningOfferedService(),
-                        new PassengerTransitOfferedService(),
-                        new LoadingUnloadingOfferedService()));
-                supportedPlaneTypes.addAll(Arrays.asList(
-                        PlaneType.JET,
-                        PlaneType.TURBOPROP,
-                        PlaneType.SINGLE_ENGINE
-                ));
-                supportedFlightTypes.addAll(Arrays.asList(
-                        FlightType.COMMERCIAL,
-                        FlightType.PRIVATE
-                ));
+                        RefuelingOfferedServiceSingleton.getInstance(),
+                        CleaningOfferedServiceSingleton.getInstance(),
+                        PassengerTransitOfferedServiceSingleton.getInstance(),
+                        LoadingUnloadingOfferedServiceSingleton.getInstance()));
                 break;
             default:
                 throw new DockingStationException("The Docking Station Type specified does not exist.");
         }
         dockingStation.setOfferedServiceSet(offeredServicesSet);
-        dockingStation.setSupportedPlaneTypeSet(supportedPlaneTypes);
-        dockingStation.setSupportedFlightTypeSet(supportedFlightTypes);
         return this;
     }
 
@@ -183,9 +120,7 @@ public class DockingStationBuilder {
                 dockingStation.getDockingSpaceList() != null &&
                 dockingStation.getCost() != 0 &&
                 dockingStation.getMaxLandingDurationInMinutes() != 0 &&
-                dockingStation.getOfferedServiceSet() != null &&
-                dockingStation.getSupportedFlightTypeSet() != null &&
-                dockingStation.getSupportedPlaneTypeSet() != null);
+                dockingStation.getOfferedServiceSet() != null);
     }
 
 }

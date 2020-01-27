@@ -3,9 +3,9 @@ package gr.ntua.multimediaproject.dockingstations;
 import gr.ntua.multimediaproject.flights.FlightType;
 import gr.ntua.multimediaproject.flights.PlaneType;
 
-public class GateDockingStation extends DockingStation {
+public class ZoneADockingStation extends DockingStation {
 
-    GateDockingStation(){}
+    ZoneADockingStation(){}
 
     @Override
     public boolean canServiceFlightType(FlightType flightType) {
@@ -14,6 +14,7 @@ public class GateDockingStation extends DockingStation {
 
     @Override
     public boolean canServicePlaneType(PlaneType planeType) {
-        return (planeType == PlaneType.JET || planeType == PlaneType.TURBOPROP);
+        return (planeType == PlaneType.TURBOPROP || planeType == PlaneType.JET);
     }
+
 }

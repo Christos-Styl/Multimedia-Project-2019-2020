@@ -24,6 +24,8 @@ public class DockingSpace {
         this.dockingSpaceState = dockingSpaceState;
     }
 
+
+
     @Override
     public String toString() {
         return "DockingSpace{" +

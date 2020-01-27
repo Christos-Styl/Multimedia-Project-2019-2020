@@ -14,8 +14,6 @@ public abstract class DockingStation {
     protected int maxLandingDurationInMinutes;
     protected double cost;
     protected Set<OfferedService> offeredServiceSet;
-    protected Set<FlightType> supportedFlightTypeSet;
-    protected Set<PlaneType> supportedPlaneTypeSet;
 
     DockingStation(){}
 
@@ -59,20 +57,16 @@ public abstract class DockingStation {
         this.offeredServiceSet = offeredServiceSet;
     }
 
-    public Set<FlightType> getSupportedFlightTypeSet() {
-        return supportedFlightTypeSet;
+    public boolean hasFreeDockingSpaces(){
+        return (numberOfFreeDockingSpaces > 0);
     }
 
-    public void setSupportedFlightTypeSet(Set<FlightType> supportedFlightTypeSet) {
-        this.supportedFlightTypeSet = supportedFlightTypeSet;
-    }
+    public abstract boolean canServiceFlightType(FlightType flightType);
 
-    public Set<PlaneType> getSupportedPlaneTypeSet() {
-        return supportedPlaneTypeSet;
-    }
+    public abstract boolean canServicePlaneType(PlaneType planeType);
 
-    public void setSupportedPlaneTypeSet(Set<PlaneType> supportedPlaneTypeSet) {
-        this.supportedPlaneTypeSet = supportedPlaneTypeSet;
+    public boolean hasOfferedServices(Set<OfferedService> requestedServiceSet){
+        return offeredServiceSet.containsAll(requestedServiceSet);
     }
 
     @Override

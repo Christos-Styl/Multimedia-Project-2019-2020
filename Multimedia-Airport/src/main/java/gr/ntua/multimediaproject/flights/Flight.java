@@ -2,6 +2,7 @@ package gr.ntua.multimediaproject.flights;
 
 import gr.ntua.multimediaproject.offeredservices.OfferedService;
 
+import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 
@@ -82,6 +83,37 @@ public class Flight {
     }
 
     public int getRandomTimeUntilDepartureInMinutes(int predictedTimeUntilDepartureInMinutes){
+        //TODO fix so that it returns proper numbers (ex. bigger than predicted dep time)
         return random.ints(1, predictedTimeUntilDepartureInMinutes).findFirst().getAsInt();
+    }
+
+    @Override
+    public String toString() {
+        return "Flight{" +
+                "id='" + id + '\'' +
+                ", city='" + city + '\'' +
+                ", flightType=" + flightType +
+                ", planeType=" + planeType +
+                ", flightState=" + flightState +
+                ", predictedTakeoffTimeInMinutes=" + predictedTakeoffTimeInMinutes +
+                ", requestedOfferedServicesSet=" + requestedOfferedServicesSet +
+                ", timeNeededToDockInMinutes=" + timeNeededToDockInMinutes +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Flight flight = (Flight) o;
+        return Objects.equals(id, flight.id) &&
+                Objects.equals(city, flight.city) &&
+                flightType == flight.flightType &&
+                planeType == flight.planeType;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, city);
     }
 }

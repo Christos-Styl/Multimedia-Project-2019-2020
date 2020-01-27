@@ -8,12 +8,12 @@ import java.util.Set;
 public class FlightBuilder {
     private Flight flight = new Flight();
 
-    public FlightBuilder create(){
+    public static FlightBuilder create(){
         return new FlightBuilder();
     }
 
-    public FlightBuilder ofIdPrefixAndNum(String prefix, int num){
-        flight.setId(prefix + num);
+    public FlightBuilder ofId(String id){
+        flight.setId(id);
         return this;
     }
 
