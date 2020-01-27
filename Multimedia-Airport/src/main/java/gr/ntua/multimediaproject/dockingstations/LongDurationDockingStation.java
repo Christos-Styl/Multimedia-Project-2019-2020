@@ -1,4 +1,4 @@
-package gr.ntua.multimediaproject.stations;
+package gr.ntua.multimediaproject.dockingstations;
 
 public class LongDurationDockingStation extends DockingStation{
 

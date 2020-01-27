@@ -1,4 +1,4 @@
-package gr.ntua.multimediaproject.stations.exceptions;
+package gr.ntua.multimediaproject.dockingstations.exceptions;
 
 public class DockingStationException extends Exception {
 
