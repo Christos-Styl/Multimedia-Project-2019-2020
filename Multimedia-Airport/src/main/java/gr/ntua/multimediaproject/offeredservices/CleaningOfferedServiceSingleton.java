@@ -13,4 +13,11 @@ public class CleaningOfferedServiceSingleton extends OfferedService {
         }
         return cleaningOfferedServiceSingleton;
     }
+
+    @Override
+    public String toString() {
+        return "CleaningOfferedService{" +
+                "extraCostFactor=" + extraCostFactor +
+                '}';
+    }
 }

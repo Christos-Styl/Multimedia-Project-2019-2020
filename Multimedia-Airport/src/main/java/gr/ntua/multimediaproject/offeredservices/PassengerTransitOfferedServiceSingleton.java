@@ -14,4 +14,11 @@ public class PassengerTransitOfferedServiceSingleton extends OfferedService {
         return passengerTransitOfferedServiceSingleton;
     }
 
+    @Override
+    public String toString() {
+        return "PassengerTransitOfferedService{" +
+                "extraCostFactor=" + extraCostFactor +
+                '}';
+    }
+
 }

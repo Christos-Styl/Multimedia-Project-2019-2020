@@ -1,10 +1,14 @@
 package gr.ntua.multimediaproject.dockingstations;
 
+import gr.ntua.multimediaproject.dockingstations.exceptions.DockingStationException;
+import gr.ntua.multimediaproject.flights.Flight;
+
 import java.util.Objects;
 
 public class DockingSpace {
     private String id;
-    private DockingSpaceState dockingSpaceState;
+    private Flight flight;
+    private DockingStation dockingStation;
 
     public DockingSpace() {}
 
@@ -16,21 +20,35 @@ public class DockingSpace {
         this.id = id;
     }
 
-    public DockingSpaceState getDockingSpaceState() {
-        return dockingSpaceState;
+    public Flight getFlight() {
+        return flight;
     }
 
-    public void setDockingSpaceState(DockingSpaceState dockingSpaceState) {
-        this.dockingSpaceState = dockingSpaceState;
+    public void setFlight(Flight flight) {
+        this.flight = flight;
     }
 
+    public DockingStation getDockingStation() {
+        return dockingStation;
+    }
 
+    public void setDockingStation(DockingStation dockingStation) {
+        this.dockingStation = dockingStation;
+    }
+
+    public synchronized void updateDockingStationAfterTakeoff() throws DockingStationException{
+        if(dockingStation.getNumberOfFreeDockingSpaces() + 1 > dockingStation.getDockingSpaceList().size()){
+            throw new DockingStationException("Tried to free docking space in Docking Station with docking space : \""
+                    + this.id + "\" but Docking Station should already be completely empty...");
+        }
+        this.dockingStation.setNumberOfFreeDockingSpaces(this.dockingStation.getNumberOfFreeDockingSpaces() + 1);
+    }
 
     @Override
     public String toString() {
         return "DockingSpace{" +
                 "id='" + id + '\'' +
-                ", dockingSpaceState=" + dockingSpaceState +
+                ", flight=" + flight +
                 '}';
     }
 

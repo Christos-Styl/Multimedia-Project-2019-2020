@@ -13,4 +13,12 @@ public class RefuelingOfferedServiceSingleton extends OfferedService {
         }
         return refuelingOfferedServiceSingleton;
     }
+
+    @Override
+    public String toString() {
+        return "RefuelingOfferedService{" +
+                "extraCostFactor=" + extraCostFactor +
+                '}';
+    }
+
 }

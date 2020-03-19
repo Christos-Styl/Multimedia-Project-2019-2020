@@ -17,11 +17,11 @@ public abstract class DockingStation {
 
     DockingStation(){}
 
-    public int getNumberOfFreeDockingSpaces() {
+    public synchronized int getNumberOfFreeDockingSpaces() {
         return numberOfFreeDockingSpaces;
     }
 
-    public void setNumberOfFreeDockingSpaces(int numberOfFreeDockingSpaces) {
+    public synchronized void setNumberOfFreeDockingSpaces(int numberOfFreeDockingSpaces) {
         this.numberOfFreeDockingSpaces = numberOfFreeDockingSpaces;
     }
 
@@ -57,10 +57,6 @@ public abstract class DockingStation {
         this.offeredServiceSet = offeredServiceSet;
     }
 
-    public boolean hasFreeDockingSpaces(){
-        return (numberOfFreeDockingSpaces > 0);
-    }
-
     public abstract boolean canServiceFlightType(FlightType flightType);
 
     public abstract boolean canServicePlaneType(PlaneType planeType);
@@ -90,7 +86,7 @@ public abstract class DockingStation {
         }
         String offeredServicesToString = "";
         for(OfferedService offeredService : offeredServiceSet){
-            offeredServicesToString = offeredServicesToString.concat(offeredService.toString() + "\n");
+            offeredServicesToString = offeredServicesToString.concat(offeredService.toString() + " ");
         }
         return "DockingStation{" +
                 "type=" + this.getClass().toString() +

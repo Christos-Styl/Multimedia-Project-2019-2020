@@ -4,6 +4,7 @@ import gr.ntua.multimediaproject.offeredservices.*;
 import gr.ntua.multimediaproject.dockingstations.exceptions.DockingStationException;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class DockingStationBuilder {
     private DockingStation dockingStation;
@@ -88,11 +89,12 @@ public class DockingStationBuilder {
         if(numberOfSpaces <= 0){
             throw new DockingStationException("Docking Station should have a positive number of docking spaces.");
         }
-        List<DockingSpace> dockingSpaceList = new ArrayList<>();
+        List<DockingSpace> dockingSpaceList = new CopyOnWriteArrayList<>();
         for(int count=0; count < numberOfSpaces; count++){
             DockingSpace dockingSpace = new DockingSpace();
-            dockingSpace.setDockingSpaceState(DockingSpaceState.EMPTY);
+            dockingSpace.setFlight(null);
             dockingSpace.setId(namePrefix + count);
+            dockingSpace.setDockingStation(dockingStation);
             dockingSpaceList.add(dockingSpace);
         }
         dockingStation.setDockingSpaceList(dockingSpaceList);

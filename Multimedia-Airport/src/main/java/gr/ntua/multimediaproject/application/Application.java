@@ -9,9 +9,25 @@ public class Application {
             airport.initializeAirportContentFromFiles();
         }
         catch(Exception ex){
-            System.out.println(ex + ": "+ ex.getMessage() + " " + ex.getCause());
+            System.out.println(airport.getTimeElapsedInMinutes() + " - ERROR: " + ex + ": "+ ex.getMessage() + " " + ex.getCause());
             return;
         }
-        System.out.println(airport);
+        System.out.println("TEST: " + airport);
+        airport.landHoldingFlightsInFreeLandingSpaces();
+        try {
+            Thread.sleep(100);
+//            System.out.println(Thread.getAllStackTraces().keySet());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("TEST: " + airport);
+        airport.clearAirport();
+        try {
+            Thread.sleep(100);
+//            System.out.println(Thread.getAllStackTraces().keySet());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("TEST: " + airport);
     }
 }

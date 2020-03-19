@@ -31,7 +31,6 @@ public abstract class OfferedService {
     @Override
     public String toString() {
         return "OfferedService{" +
-                "type=" + this.getClass().toString() +
                 "extraCostFactor=" + extraCostFactor +
                 '}';
     }

@@ -14,4 +14,10 @@ public class LoadingUnloadingOfferedServiceSingleton extends OfferedService {
         return loadingUnloadingOfferedServiceSingleton;
     }
 
+    @Override
+    public String toString() {
+        return "LoadingUnloadingOfferedService{" +
+                "extraCostFactor=" + extraCostFactor +
+                '}';
+    }
 }

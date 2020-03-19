@@ -1,11 +1,15 @@
 package gr.ntua.multimediaproject.flights;
 
+import gr.ntua.multimediaproject.airport.AirportSingleton;
 import gr.ntua.multimediaproject.flights.exceptions.FlightException;
 import gr.ntua.multimediaproject.offeredservices.OfferedService;
 
+import java.util.Random;
 import java.util.Set;
 
 public class FlightBuilder {
+    private static Random random = new Random(System.currentTimeMillis());
+
     private Flight flight = new Flight();
 
     public static FlightBuilder create(){
@@ -52,11 +56,19 @@ public class FlightBuilder {
         return this;
     }
 
-    public FlightBuilder ofPredictedTakeoffTimeInMinutes(int predictedTakeoffTimeInMinutes) throws FlightException {
+    public FlightBuilder ofPredictedParkingDurationInMinutes(int predictedTakeoffTimeInMinutes) throws FlightException {
         if(predictedTakeoffTimeInMinutes <= 0){
-            throw new FlightException("PredictedTakeoffTimeInMinutes cannot be non-positive.");
+            throw new FlightException("predictedParkingDurationInMinutes cannot be non-positive.");
         }
-        flight.setPredictedTakeoffTimeInMinutes(predictedTakeoffTimeInMinutes);
+        flight.setPredictedParkingDurationInMinutes(predictedTakeoffTimeInMinutes);
+        return this;
+    }
+
+    public FlightBuilder ofInitialCommunicationTime(int initialCommunicationTime) throws FlightException {
+        if(initialCommunicationTime < 0){
+            throw new FlightException("initialCommunicationTime cannot be negative.");
+        }
+        flight.setInitialCommunicationTime(initialCommunicationTime);
         return this;
     }
 
@@ -65,24 +77,57 @@ public class FlightBuilder {
         return this;
     }
 
-    public boolean doesFlightHaveRequiredFields(){
+    public FlightBuilder ofAirport(AirportSingleton airport){
+        flight.setAirport(airport);
+        return this;
+    }
+
+    public boolean areFlightRequiredFieldsOK(){
         return (flight.getId() != null &&
                 flight.getCity() != null &&
                 flight.getFlightState() != null &&
                 flight.getFlightType() != null &&
                 flight.getPlaneType() != null &&
-                flight.getPredictedTakeoffTimeInMinutes() != 0 &&
-                flight.getTimeNeededToDockInMinutes() != 0 &&
-                flight.getRequestedOfferedServicesSet() != null);
+                flight.getPredictedParkingDurationInMinutes() > 0 &&
+                flight.getInitialCommunicationTime() >= 0 &&
+                flight.getTimeNeededToDockInMinutes() > 0 &&
+                flight.getRequestedOfferedServicesSet() != null) &&
+                flight.getDockingSpace() == null &&
+                flight.getAirport() != null;
     }
 
     public Flight build() throws FlightException{
-        if(!doesFlightHaveRequiredFields()){
+        if(!areFlightRequiredFieldsOK()){
             throw new FlightException("Flight does not have all required fields.");
         }
-        if(flight.getTimeNeededToDockInMinutes() >= flight.getPredictedTakeoffTimeInMinutes()){
+        if(flight.getTimeNeededToDockInMinutes() >= flight.getPredictedParkingDurationInMinutes()){
             throw new FlightException("TimeNeededToDockInMinutes must be less than predictedTakeoffTimeInMinutes");
         }
+        int predictedTakeoffTimeInMinutes = flight.getPredictedParkingDurationInMinutes();
+        int randomDelayTimeInMinutes = createRandomDelayBasedOnPredictedTakeoff(predictedTakeoffTimeInMinutes);
+        this.flight.setDelayTimeInMinutes(randomDelayTimeInMinutes);
+        this.flight.setDockingSpace(null);
+//        System.out.println("INFO: FlightBuilder has created flight: \"" + this.flight +"\".");
         return this.flight;
+    }
+
+    private int createRandomDelayBasedOnPredictedTakeoff(int predictedTakeoffTimeInMinutes){
+        int soonerLaterOrOnTime = random.ints(1, 101).findFirst().getAsInt();
+        int delayTimeInMinutes;
+        //a flight will be able to depart sooner only if totalTimeInDockingSpace is sufficiently high
+        int totalTimeInDockingSpace = flight.getPredictedParkingDurationInMinutes() + flight.getTimeNeededToDockInMinutes();
+
+        if(soonerLaterOrOnTime <= 25 && totalTimeInDockingSpace >= 15){     //flight will depart sooner than predicted - negative delay
+            delayTimeInMinutes = random.ints(-flight.getPredictedParkingDurationInMinutes()/2, -0)
+                    .findFirst().getAsInt();
+        }
+        else if(soonerLaterOrOnTime <= 50){      //flight will depart later than predicted
+            delayTimeInMinutes = random.ints(0, flight.getPredictedParkingDurationInMinutes()/2)
+                    .findFirst().getAsInt();
+        }
+        else{                                   //flight will depart on time
+            delayTimeInMinutes = 0;
+        }
+        return delayTimeInMinutes;
     }
 }
