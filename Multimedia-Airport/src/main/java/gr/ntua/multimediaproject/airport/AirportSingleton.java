@@ -174,12 +174,31 @@ public class AirportSingleton {
         try {
             for (String[] line : lines) {
                 Flight flight = createNewFlightFromFileLine(line);
+                if(flightIdAlreadyExists(flight)){
+                    System.out.println(timeElapsedInMinutes + " - ERROR: Flight with id " + flight.getId() + " already exists. Ignoring flight...");
+                    continue;
+                }
                 holdingFlightsList.add(flight);
             }
         }
         catch(FlightException ex){
             System.out.println(timeElapsedInMinutes + " - ERROR: " + ex + ": "+ ex.getMessage() + " " + ex.getCause());
         }
+    }
+
+    private boolean flightIdAlreadyExists(Flight flight){
+        for(Flight holdingFlight : holdingFlightsList){
+//            System.out.println("flight , holdingFlight " + flight.getId() + " , " + holdingFlight.getId() + " " + (flight == holdingFlight));
+            if(flight.getId().equals(holdingFlight.getId())) {
+                return true;
+            }
+        }
+        for(Flight landingOrParkedFlight : landingOrParkedFlightsList) {
+            if (landingOrParkedFlight.getId().equals(flight.getId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private Flight createNewFlightFromFileLine(String[] line) throws FlightException{
@@ -318,16 +337,18 @@ public class AirportSingleton {
         for(Thread thread : landingOrParkedFlightThreadsMap.values()){
             thread.interrupt();
         }
-        try {
-            Thread.sleep(10);       //wait for threads to stop
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        do {
+            totalMoneyEarned = 0;
+            try {
+                Thread.sleep(50);       //wait for threads to stop
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }while(totalMoneyEarned != 0);
         landingOrParkedFlightThreadsMap = new ConcurrentHashMap<>();
         dockingStationList = new CopyOnWriteArrayList<>();
         holdingFlightsList = new CopyOnWriteArrayList<>();
         landingOrParkedFlightsList = new CopyOnWriteArrayList<>();
-        totalMoneyEarned = 0;
         interruptTimerCounter();
         timeElapsedInMinutes = 0;
         System.out.println(timeElapsedInMinutes + " - INFO: Airport has been reset...");
@@ -373,6 +394,9 @@ public class AirportSingleton {
         return "AirportSingleton{\n" +
                 "timeElapsedInMinutes=" + timeElapsedInMinutes + "\n" +
                 "totalMoneyEarned=" + totalMoneyEarned + "\n" +
+                "dockingStationNumber=" + (dockingStationList != null ? dockingStationList.size() + "\n" : "null\n") +
+                "holdingFlightsNumber=" + (holdingFlightsList != null ? holdingFlightsList.size() + "\n": "null\n") +
+                "landingOrParkedFlightsNumber=" + (landingOrParkedFlightsList != null ? landingOrParkedFlightsList.size() + "\n": "null\n") +
 //                "dockingStationList=\n\n" + dockingStationListToString +
 //                "holdingFlightsList=\n\n" + holdingFlightsToString +
                 '}';

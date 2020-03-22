@@ -9,7 +9,7 @@ public abstract class AbstractHelper {
     }
 
     public static int getRealMillisecondsForOneSimulationMinute() {
-        return 10;
+        return 50;
     }
 
 }
