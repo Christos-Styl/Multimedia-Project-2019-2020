@@ -65,6 +65,10 @@ public abstract class DockingStation {
         return offeredServiceSet.containsAll(requestedServiceSet);
     }
 
+    public String getDockingStationType(){
+        return getClass().getSimpleName();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -100,25 +100,24 @@ public class FlightBuilder {
         if(!areFlightRequiredFieldsOK()){
             throw new FlightException("Flight does not have all required fields.");
         }
-        if(flight.getTimeNeededToDockInMinutes() >= flight.getPredictedParkingDurationInMinutes()){
-            throw new FlightException("TimeNeededToDockInMinutes must be less than predictedTakeoffTimeInMinutes");
-        }
         int predictedTakeoffTimeInMinutes = flight.getPredictedParkingDurationInMinutes();
         int randomDelayTimeInMinutes = createRandomDelayBasedOnPredictedTakeoff(predictedTakeoffTimeInMinutes);
         this.flight.setDelayTimeInMinutes(randomDelayTimeInMinutes);
         this.flight.setDockingSpace(null);
-//        System.out.println("INFO: FlightBuilder has created flight: \"" + this.flight +"\".");
         return this.flight;
     }
 
     private int createRandomDelayBasedOnPredictedTakeoff(int predictedTakeoffTimeInMinutes){
+        int totalTimeInDockingSpace = flight.getPredictedParkingDurationInMinutes() + flight.getTimeNeededToDockInMinutes();
+        if(flight.getPredictedParkingDurationInMinutes() < 2){
+            return 0;
+        }
         int soonerLaterOrOnTime = random.ints(1, 101).findFirst().getAsInt();
         int delayTimeInMinutes;
-        //a flight will be able to depart sooner only if totalTimeInDockingSpace is sufficiently high
-        int totalTimeInDockingSpace = flight.getPredictedParkingDurationInMinutes() + flight.getTimeNeededToDockInMinutes();
 
+        //a flight will be able to depart sooner only if totalTimeInDockingSpace is sufficiently high
         if(soonerLaterOrOnTime <= 25 && totalTimeInDockingSpace >= 15){     //flight will depart sooner than predicted - negative delay
-            delayTimeInMinutes = random.ints(-flight.getPredictedParkingDurationInMinutes()/2, -0)
+            delayTimeInMinutes = random.ints(-flight.getPredictedParkingDurationInMinutes()/2, 0)
                     .findFirst().getAsInt();
         }
         else if(soonerLaterOrOnTime <= 50){      //flight will depart later than predicted

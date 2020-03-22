@@ -16,7 +16,7 @@ public class AirportGui extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         AirportSingleton airport = AirportSingleton.getInstance();
-        tryInitializeAirportContentFromFiles(airport);
+//        tryInitializeAirportContentFromFiles(airport);
         MainWindow window = new MainWindow("MediaLab Airport", airport);
 
 //        BorderPane borderPane = new BorderPane();
@@ -46,14 +46,14 @@ public class AirportGui extends Application {
         window.show();
     }
 
-    private void tryInitializeAirportContentFromFiles(AirportSingleton airport){
-        try{
-            airport.initializeAirportContentFromFiles();
-        }
-        catch(Exception ex){
-            System.out.println(airport.getTimeElapsedInMinutes() + " - ERROR: " + ex + ": "+ ex.getMessage() + " " + ex.getCause());
-        }
-    }
+//    private void tryInitializeAirportContentFromFiles(AirportSingleton airport){
+//        try{
+//            airport.initializeAirportContentFromFiles();
+//        }
+//        catch(Exception ex){
+//            System.out.println(airport.getTimeElapsedInMinutes() + " - ERROR: " + ex + ": "+ ex.getMessage() + " " + ex.getCause());
+//        }
+//    }
 
     public static void main(String[] args){
 //        airport = AirportSingleton.getInstance();

@@ -10,7 +10,9 @@ import gr.ntua.multimediaproject.dockingstations.DockingStationType;
 import gr.ntua.multimediaproject.dockingstations.exceptions.DockingStationException;
 import gr.ntua.multimediaproject.flights.*;
 import gr.ntua.multimediaproject.flights.exceptions.FlightException;
-import gr.ntua.multimediaproject.offeredservices.OfferedService;
+import gr.ntua.multimediaproject.offeredservices.*;
+import gr.ntua.multimediaproject.ui.MainWindow;
+import javafx.application.Platform;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -22,6 +24,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class AirportSingleton {
     private static AirportSingleton airport;
+    private MainWindow mainWindow;
+
     private int timeElapsedInMinutes;
     private Thread timerCounterThread;
     private double totalMoneyEarned;
@@ -45,7 +49,14 @@ public class AirportSingleton {
         landingOrParkedFlightThreadsMap = new ConcurrentHashMap<>();
         totalMoneyEarned = 0;
         timeElapsedInMinutes = 0;
-        startTimerCounter();
+    }
+
+    public MainWindow getMainWindow() {
+        return mainWindow;
+    }
+
+    public void setMainWindow(MainWindow mainWindow) {
+        this.mainWindow = mainWindow;
     }
 
     public List<DockingStation> getDockingStationList() {
@@ -96,23 +107,25 @@ public class AirportSingleton {
         this.landingOrParkedFlightThreadsMap = landingOrParkedFlightThreadsMap;
     }
 
-    public void initializeAirportContentFromFiles() throws DockingStationException{
-        String airportSetupFileName = "Multimedia-Airport/src/main/java/gr/ntua/multimediaproject/medialab/airport_default.txt";
+    public void initializeAirportContentFromFiles(String scenarioId) throws DockingStationException, AirportException{
+        String airportSetupFileName = "Multimedia-Airport/src/main/java/gr/ntua/multimediaproject/medialab/airport_" + scenarioId + ".txt";
         initializeDockingStationListFromAirportSetupFile(airportSetupFileName);
         if(!AbstractHelper.canLoopCollection(dockingStationList)){
             throw new DockingStationException("Airport has no Docking Stations!");
         }
-        System.out.println(timeElapsedInMinutes + " - INFO: Airport completed initialization of Docking Stations from file.");
-        System.out.println(timeElapsedInMinutes + " - INFO: Airport number of Docking Stations: " + dockingStationList.size());
+        System.out.println(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) + " - INFO: Airport completed initialization of Docking Stations from file.");
+        Platform.runLater(() -> mainWindow.logMessage(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) + " - INFO: Airport completed initialization of Docking Stations from file."));
+        System.out.println(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) + " - INFO: Airport number of Docking Stations: " + dockingStationList.size());
 
-        String flightsSetupFileName = "Multimedia-Airport/src/main/java/gr/ntua/multimediaproject/medialab/setup_default.txt";
+        String flightsSetupFileName = "Multimedia-Airport/src/main/java/gr/ntua/multimediaproject/medialab/setup_" + scenarioId + ".txt";
         initializeStartingFlightsFromAirportSetupFile(flightsSetupFileName);
-        System.out.println(timeElapsedInMinutes + " - INFO: Airport completed initialization of starting Flights from file.");
-        System.out.println(timeElapsedInMinutes + " - INFO: Airport number of starting Flights: " + holdingFlightsList.size());
+        System.out.println(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) + " - INFO: Airport completed initialization of starting Flights from file.");
+        Platform.runLater(() -> mainWindow.logMessage(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) + " - INFO: Airport completed initialization of starting Flights from file."));
+        System.out.println(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) + " - INFO: Airport number of starting Flights: " + holdingFlightsList.size());
     }
 
 
-    private void initializeDockingStationListFromAirportSetupFile(String fileName){
+    private void initializeDockingStationListFromAirportSetupFile(String fileName) throws AirportException{
         List<String[]> lines = readFileLinesIntoListOfStringArrays(fileName, 4);
         try {
             for (String[] line : lines) {
@@ -121,12 +134,13 @@ public class AirportSingleton {
             }
         }
         catch(DockingStationException ex){
-            System.out.println(timeElapsedInMinutes + " - ERROR: " + ex + ": "+ ex.getMessage() + " " + ex.getCause());
+            System.out.println(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) + " - ERROR: " + ex + ": "+ ex.getMessage() + " " + ex.getCause());
+            Platform.runLater(() -> mainWindow.logMessage(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) + " - ERROR: " + ex + ": "+ ex.getMessage() + " " + ex.getCause()));
         }
     }
 
 
-    private List<String[]> readFileLinesIntoListOfStringArrays(String fileName, int numberOfItemsPerLine){
+    private List<String[]> readFileLinesIntoListOfStringArrays(String fileName, int numberOfItemsPerLine) throws AirportException{
         List<String[]> lines = new ArrayList<>();
         String delimiter = ",(\\s*)";
         try {
@@ -143,11 +157,15 @@ public class AirportSingleton {
                 }
             }
             catch (IOException ex) {
-                System.out.println(timeElapsedInMinutes + " - ERROR: " + ex + ": "+ ex.getMessage() + " " + ex.getCause());
+                System.out.println(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) + " - ERROR: " + ex + ": "+ ex.getMessage() + " " + ex.getCause());
+                Platform.runLater(() -> mainWindow.logMessage(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) + " - ERROR: " + ex + ": "+ ex.getMessage() + " " + ex.getCause()));
+                throw new AirportException(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) + " - ERROR: IO exception in file " + fileName + "...");
             }
         }
         catch (FileNotFoundException ex) {
-            System.out.println(timeElapsedInMinutes + " - ERROR: " + ex + ": "+ ex.getMessage() + " " + ex.getCause());
+            System.out.println(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) + " - ERROR: " + ex + ": "+ ex.getMessage() + " " + ex.getCause());
+            Platform.runLater(() -> mainWindow.logMessage(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) + " - ERROR: " + ex + ": "+ ex.getMessage() + " " + ex.getCause()));
+            throw new AirportException(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) + " - ERROR: File " + fileName + " not found...");
         }
         return lines;
     }
@@ -163,32 +181,34 @@ public class AirportSingleton {
                     ofIdPrefixAndNumberOfSpaces(idPrefix, numberOfLandingSpaces).build();
         }
         catch(DockingStationException ex){
-            System.out.println(timeElapsedInMinutes + " - ERROR: " + ex + ": "+ ex.getMessage() + " " + ex.getCause());
+            System.out.println(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) + " - ERROR: " + ex + ": "+ ex.getMessage() + " " + ex.getCause());
+            Platform.runLater(() -> mainWindow.logMessage(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) + " - ERROR: " + ex + ": "+ ex.getMessage() + " " + ex.getCause()));
             throw new DockingStationException("createNewDockingStationsFromFileLine failed.");
         }
     }
 
 
-    private void initializeStartingFlightsFromAirportSetupFile(String flightsSetupFileName){
+    private void initializeStartingFlightsFromAirportSetupFile(String flightsSetupFileName) throws AirportException{
         List<String[]> lines = readFileLinesIntoListOfStringArrays(flightsSetupFileName, 5);
         try {
             for (String[] line : lines) {
                 Flight flight = createNewFlightFromFileLine(line);
                 if(flightIdAlreadyExists(flight)){
-                    System.out.println(timeElapsedInMinutes + " - ERROR: Flight with id " + flight.getId() + " already exists. Ignoring flight...");
+                    System.out.println(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) + " - ERROR: Flight with id " + flight.getId() + " already exists. Ignoring flight...");
+                    Platform.runLater(() -> mainWindow.logMessage(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) + " - ERROR: Flight with id " + flight.getId() + " already exists. Ignoring flight..."));
                     continue;
                 }
                 holdingFlightsList.add(flight);
             }
         }
         catch(FlightException ex){
-            System.out.println(timeElapsedInMinutes + " - ERROR: " + ex + ": "+ ex.getMessage() + " " + ex.getCause());
+            Platform.runLater(() -> mainWindow.logMessage(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) + " - ERROR: " + ex + ": "+ ex.getMessage() + " " + ex.getCause()));
+            System.out.println(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) + " - ERROR: " + ex + ": "+ ex.getMessage() + " " + ex.getCause());
         }
     }
 
     private boolean flightIdAlreadyExists(Flight flight){
         for(Flight holdingFlight : holdingFlightsList){
-//            System.out.println("flight , holdingFlight " + flight.getId() + " , " + holdingFlight.getId() + " " + (flight == holdingFlight));
             if(flight.getId().equals(holdingFlight.getId())) {
                 return true;
             }
@@ -212,16 +232,20 @@ public class AirportSingleton {
             Flight flight = FlightBuilder.create().ofId(id).ofCity(city).ofPlaneType(planeType).ofFlightType(flightType).
                     ofFlightState(FlightState.HOLDING).ofPredictedParkingDurationInMinutes(predictedTakeoffTimeInMinutes).
                     ofInitialCommunicationTime(0).ofRequestedOfferedServicesSet(Collections.EMPTY_SET).ofAirport(this).build();
-            System.out.println(airport.getTimeElapsedInMinutes() + " - INFO: FlightBuilder has created flight: \"" + flight +"\".");
+            System.out.println(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) +
+                    " - INFO: FlightBuilder has created flight: \"" + flight +"\".");
+            Platform.runLater(() -> mainWindow.logMessage(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) +
+                    " - INFO: FlightBuilder has created flight: \"" + flight +"\"."));
             return flight;
         }
         catch(FlightException ex){
-            System.out.println(airport.getTimeElapsedInMinutes() + " - ERROR: " + ex + ": "+ ex.getMessage() + " " + ex.getCause());
+            System.out.println(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) + " - ERROR: " + ex + ": "+ ex.getMessage() + " " + ex.getCause());
+            Platform.runLater(() -> mainWindow.logMessage(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) + " - ERROR: " + ex + ": "+ ex.getMessage() + " " + ex.getCause()));
             throw new FlightException("createNewFlightFromFileLine failed.");
         }
     }
 
-    public synchronized void landHoldingFlightsInFreeLandingSpaces(){
+    public synchronized void landHoldingFlightsInFreeLandingSpaces() throws AirportException{
         for (Flight flight : holdingFlightsList) {
             DockingStation appropriateDockingStation = findAppropriateDockingStationWithMostDockingSpaces(flight);
             if (appropriateDockingStation != null) {
@@ -231,19 +255,21 @@ public class AirportSingleton {
                     landingOrParkedFlightThreadsMap.put(flight, thread);
                     thread.start();
                 } catch (AirportException ex) {
-                    System.out.println(timeElapsedInMinutes + " - ERROR: " + ex + ": " + ex.getMessage() + " " + ex.getCause());
-                    System.out.println(timeElapsedInMinutes + " - INFO: Deleting flight with id: \"" + flight.getId() + "\" after failed association with Docking Space...");
+                    System.out.println(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) + " - ERROR: " + ex + ": " + ex.getMessage() + " " + ex.getCause());
+                    Platform.runLater(() -> mainWindow.logMessage(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) + " - ERROR: " + ex + ": " + ex.getMessage() + " " + ex.getCause()));
+                    System.out.println(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) + " - INFO: Deleting flight with id: \"" + flight.getId() + "\" after failed association with Docking Space...");
+                    Platform.runLater(() -> mainWindow.logMessage(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) + " - INFO: Deleting flight with id: \"" + flight.getId() + "\" after failed association with Docking Space..."));
                 }
             }
         }
     }
 
-    private DockingStation findAppropriateDockingStationWithMostDockingSpaces(Flight flight){
+    private DockingStation findAppropriateDockingStationWithMostDockingSpaces(Flight flight) throws AirportException{
         int largestNumberOfDockingSpaces = 0;
         DockingStation dockingStationWithMostDockingSpaces = null;
         for(DockingStation dockingStation : dockingStationList){
             if(dockingStation.canServiceFlightType(flight.getFlightType()) &&
-                    dockingStation.getMaxLandingDurationInMinutes() >= flight.getPredictedParkingDurationInMinutes() &&
+                    (dockingStation.getMaxLandingDurationInMinutes() >= flight.getPredictedParkingDurationInMinutes()) &&
                     dockingStation.canServicePlaneType(flight.getPlaneType()) &&
                     dockingStation.hasOfferedServices(flight.getRequestedOfferedServicesSet()) &&
                     dockingStation.getNumberOfFreeDockingSpaces() > largestNumberOfDockingSpaces){
@@ -251,14 +277,20 @@ public class AirportSingleton {
                 dockingStationWithMostDockingSpaces = dockingStation;
             }
         }
-//        System.out.println("DEBUG: Flight: " + flight.getId() + " got Docking Station with Docking Space " +
-//                (dockingStationWithMostDockingSpaces != null ? dockingStationWithMostDockingSpaces.getDockingSpaceList().get(0).getId() : "null")
-//                + " and space " +
-//                (dockingStationWithMostDockingSpaces != null ? dockingStationWithMostDockingSpaces.getNumberOfFreeDockingSpaces() : "null"));
         return dockingStationWithMostDockingSpaces;
     }
 
-
+    private boolean flightCanBeServiced(Flight flight) throws AirportException{
+        for(DockingStation dockingStation : dockingStationList) {
+            if (dockingStation.canServiceFlightType(flight.getFlightType()) &&
+                    (dockingStation.getMaxLandingDurationInMinutes() >= flight.getPredictedParkingDurationInMinutes()) &&
+                    dockingStation.canServicePlaneType(flight.getPlaneType()) &&
+                    dockingStation.hasOfferedServices(flight.getRequestedOfferedServicesSet())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     private void associateFlightWithDockingStation(Flight flight, DockingStation dockingStation) throws AirportException{
         DockingSpace firstAvailableDockingSpace = null;
@@ -288,7 +320,8 @@ public class AirportSingleton {
             moneyToAdd = flight.getDockingSpace().getDockingStation().getCost();
         }
         else{
-            System.out.println(timeElapsedInMinutes + " - ERROR: money added from flight is 0...");
+            Platform.runLater(() -> mainWindow.logMessage(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) + " - ERROR: money added from flight is 0..."));
+            System.out.println(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) + " - ERROR: money added from flight is 0...");
             return;
         }
         double serviceMultiplier = 1;
@@ -314,12 +347,15 @@ public class AirportSingleton {
             }
         }
         else{
-            System.out.println(timeElapsedInMinutes + " - ERROR: flight had non-positive predicted parking duration when calculating payment...");
+            Platform.runLater(() -> mainWindow.logMessage(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) + " - ERROR: money added from flight is 0..."));
+            System.out.println(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) + " - ERROR: money added from flight is 0...");
             return;
         }
         moneyToAdd *= delayMultiplier;
         totalMoneyEarned += moneyToAdd;
         System.out.println(timeElapsedInMinutes + " - INFO: " + moneyToAdd + " money added from flight with id: " + flight.getId());
+        final double finalMoneyToAdd = moneyToAdd;
+        Platform.runLater(() -> mainWindow.logMessage(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) + " - INFO: " + finalMoneyToAdd + " money added from flight with id: " + flight.getId()));
     }
 
     private void startTimerCounter(){
@@ -330,10 +366,12 @@ public class AirportSingleton {
 
     public synchronized void incrementTimeElapsedInMinutes(){
         timeElapsedInMinutes++;
+        Platform.runLater(() -> mainWindow.refreshGui());
     }
 
     public void clearAirport(){
         System.out.println(timeElapsedInMinutes + " - INFO: Airport resetting...");
+        Platform.runLater(() -> mainWindow.logMessage(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) + " - INFO: Airport resetting..."));
         for(Thread thread : landingOrParkedFlightThreadsMap.values()){
             thread.interrupt();
         }
@@ -352,11 +390,20 @@ public class AirportSingleton {
         interruptTimerCounter();
         timeElapsedInMinutes = 0;
         System.out.println(timeElapsedInMinutes + " - INFO: Airport has been reset...");
+        Platform.runLater(() -> mainWindow.logMessage(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) + " - INFO: Airport has been reset..."));
         System.out.println(Thread.getAllStackTraces().keySet());
     }
 
+    public void runAirport(String scenarioId) throws DockingStationException, AirportException {
+        initializeAirportContentFromFiles(scenarioId);
+        startTimerCounter();
+        landHoldingFlightsInFreeLandingSpaces();
+    }
+
     private void interruptTimerCounter(){
-        timerCounterThread.interrupt();
+        if(timerCounterThread != null) {
+            timerCounterThread.interrupt();
+        }
     }
 
     public List<Flight> getFlightsDepartingIn10Minutes(){
@@ -379,6 +426,41 @@ public class AirportSingleton {
             }
         }
         return delayedFlights;
+    }
+
+    public void createNewFlight(String id, String city, String flightTypeString, String planeTypeString, int predictedParkingDuration,
+                                boolean cleaning, boolean loading, boolean transit, boolean refueling) throws FlightException, AirportException {
+        Set<OfferedService> requiredServices = new HashSet<>();
+        if(cleaning){
+            requiredServices.add(CleaningOfferedServiceSingleton.getInstance());
+        }
+        if(loading){
+            requiredServices.add(LoadingUnloadingOfferedServiceSingleton.getInstance());
+        }
+        if(transit){
+            requiredServices.add(PassengerTransitOfferedServiceSingleton.getInstance());
+        }
+        if(refueling){
+            requiredServices.add(RefuelingOfferedServiceSingleton.getInstance());
+        }
+        PlaneType planeType = PlaneType.valueOf(Integer.parseInt(planeTypeString));
+        FlightType flightType = FlightType.valueOf(Integer.parseInt(flightTypeString));
+        Flight flight = FlightBuilder.create().ofId(id).ofCity(city).ofPlaneType(planeType).ofFlightType(flightType).
+                ofFlightState(FlightState.HOLDING).ofPredictedParkingDurationInMinutes(predictedParkingDuration).
+                ofInitialCommunicationTime(timeElapsedInMinutes).ofRequestedOfferedServicesSet(requiredServices).ofAirport(this).build();
+        System.out.println(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) +
+                " - INFO: FlightBuilder has created flight: \"" + flight +"\".");
+        Platform.runLater(() -> mainWindow.logMessage(AbstractHelper.minutesToHoursMinutes(timeElapsedInMinutes) +
+                " - INFO: FlightBuilder has created flight: \"" + flight +"\"."));
+        if(flightIdAlreadyExists(flight)){
+            throw new AirportException("Flight ID already exists.");
+        }
+        if(!flightCanBeServiced(flight)){
+            throw new AirportException("No Docking Station is qualified to service this flight. Please check parameter " +
+                    "combination.");
+        }
+        holdingFlightsList.add(flight);
+        landHoldingFlightsInFreeLandingSpaces();
     }
 
     @Override

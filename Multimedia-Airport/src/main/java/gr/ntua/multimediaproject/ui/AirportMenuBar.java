@@ -4,13 +4,11 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 
 public class AirportMenuBar extends MenuBar {
-    private TopPane top;
+    private MainTopPane top;
 
-    public AirportMenuBar(TopPane top){
+    public AirportMenuBar(MainTopPane top){
         this.top = top;
         Menu applicationMenu = new Menu("_Application");
         MenuItem start = new MenuItem("Start");
@@ -28,6 +26,7 @@ public class AirportMenuBar extends MenuBar {
         MenuItem delayed = new MenuItem("Delayed...");
         MenuItem holding = new MenuItem("Holding...");
         MenuItem nextDepartures = new MenuItem("Next Departures...");
+        setDetailsMenuItemsOnAction(gates, flights, delayed, holding, nextDepartures);
         detailsMenu.getItems().addAll(gates,
                 flights,
                 delayed,
@@ -41,5 +40,23 @@ public class AirportMenuBar extends MenuBar {
 
     private void setApplicationMenuItemsOnAction(MenuItem start, MenuItem load, MenuItem exit){
         start.setOnAction(event -> top.startAirport());
+        load.setOnAction(event -> loadScenario());
+        exit.setOnAction(event -> closeStage());
+    }
+
+    private void setDetailsMenuItemsOnAction(MenuItem gates, MenuItem flights, MenuItem delayed, MenuItem holding,
+                                             MenuItem nextDepartures){
+        gates.setOnAction(event -> top.showGates());
+    }
+
+    private void loadScenario(){
+        String scenarioId = LoadWindow.display("Load Scenario ID", "Input a scenario ID below.");
+        if (scenarioId != null) {
+            top.loadScenario(scenarioId);
+        }
+    }
+
+    public void closeStage(){
+        top.closeStage();
     }
 }

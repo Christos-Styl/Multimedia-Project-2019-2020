@@ -1,11 +1,13 @@
 package gr.ntua.multimediaproject.flights;
 
 import gr.ntua.multimediaproject.airport.AirportSingleton;
+import gr.ntua.multimediaproject.airport.exceptions.AirportException;
 import gr.ntua.multimediaproject.commonutils.AbstractHelper;
 import gr.ntua.multimediaproject.dockingstations.DockingSpace;
 import gr.ntua.multimediaproject.dockingstations.exceptions.DockingStationException;
 import gr.ntua.multimediaproject.flights.exceptions.FlightException;
 import gr.ntua.multimediaproject.offeredservices.OfferedService;
+import javafx.application.Platform;
 
 import java.util.Objects;
 import java.util.Set;
@@ -131,31 +133,54 @@ public class Flight implements Runnable{
 
     @Override
     public void run() {
-        if(!flightAttributesAreOkToLand()){
-            System.out.println("ERROR: Flight attributes in flight with id: \"" + id + "\" were not OK before landing. Removing flight...");
+        try {
+            if (!flightAttributesAreOkToLand()) {
+                Platform.runLater(() -> airport.getMainWindow().logMessage(AbstractHelper.minutesToHoursMinutes(airport.getTimeElapsedInMinutes()) +
+                        " - INFO: Airport completed initialization of Docking Stations from file."));
+                System.out.println(AbstractHelper.minutesToHoursMinutes(airport.getTimeElapsedInMinutes()) +
+                        " - ERROR: Flight attributes in flight with id: \"" + id + "\" were not OK before landing. Removing flight...");
+                tryDeleteFlight();
+                return;
+            }
+            actualTakeoffTimeInApplicationMinutes = airport.getTimeElapsedInMinutes() + timeNeededToDockInMinutes +
+                    predictedParkingDurationInMinutes + delayTimeInMinutes;
+            flightState = FlightState.LANDING;
+            System.out.println(AbstractHelper.minutesToHoursMinutes(airport.getTimeElapsedInMinutes()) +
+                    " - INFO: Flight with id: \"" + this.id + "\" state changed to LANDING. Docking Space id is: \"" +
+                    dockingSpace.getId() + "\" and actualTakeoffTimeInApplicationMinutes is: " + actualTakeoffTimeInApplicationMinutes +
+                    ". System time is: " + System.currentTimeMillis());
+            Platform.runLater(() -> airport.getMainWindow().logMessage(AbstractHelper.minutesToHoursMinutes(airport.getTimeElapsedInMinutes()) +
+                    " - INFO: Flight with id: \"" + this.id + "\" state changed to LANDING. Docking Space id is: \"" +
+                    dockingSpace.getId() + "\" and actualTakeoffTimeInApplicationMinutes is: " + actualTakeoffTimeInApplicationMinutes +
+                    ". System time is: " + System.currentTimeMillis()));
+            tryToCompleteLanding();
+            if (!flightAttributesAreOkToStayParked()) {
+                System.out.println(AbstractHelper.minutesToHoursMinutes(airport.getTimeElapsedInMinutes()) +
+                        " - ERROR: Flight attributes in flight with id: \"" + id + "\" were not OK to stay parked. Removing flight...");
+                Platform.runLater(() -> airport.getMainWindow().logMessage(AbstractHelper.minutesToHoursMinutes(airport.getTimeElapsedInMinutes()) +
+                        " - ERROR: Flight attributes in flight with id: \"" + id + "\" were not OK to stay parked. Removing flight..."));
+                tryDeleteFlight();
+                return;
+            }
+            flightState = FlightState.PARKED;
+            System.out.println(AbstractHelper.minutesToHoursMinutes(airport.getTimeElapsedInMinutes()) +
+                    " - INFO: Flight with id: \"" + this.id + "\" state changed to PARKED. Docking Space id is: \""
+                    + dockingSpace.getId() + "\".");
+            Platform.runLater(() -> airport.getMainWindow().logMessage(AbstractHelper.minutesToHoursMinutes(airport.getTimeElapsedInMinutes()) +
+                    " - INFO: Flight with id: \"" + this.id + "\" state changed to PARKED. Docking Space id is: \""
+                    + dockingSpace.getId() + "\"."));
+            tryWaitForParkingStayToEnd();
+            airport.earnMoneyFromFlight(this);
+            System.out.println(AbstractHelper.minutesToHoursMinutes(airport.getTimeElapsedInMinutes()) +
+                    " - INFO: Flight with id: \"" + this.id + "\" has TAKEN OFF. Money has been added to airport. Deleting Flight...");
+            Platform.runLater(() -> airport.getMainWindow().logMessage(AbstractHelper.minutesToHoursMinutes(airport.getTimeElapsedInMinutes()) +
+                    " - INFO: Flight with id: \"" + this.id + "\" has TAKEN OFF. Money has been added to airport. Deleting Flight..."));
             tryDeleteFlight();
-            return;
+            System.out.println(airport.getTimeElapsedInMinutes() + " - INFO: Flight with id: \"" + this.id + "\" deleted...");
         }
-        actualTakeoffTimeInApplicationMinutes = airport.getTimeElapsedInMinutes() + timeNeededToDockInMinutes +
-                predictedParkingDurationInMinutes + delayTimeInMinutes;
-        flightState = FlightState.LANDING;
-        System.out.println(airport.getTimeElapsedInMinutes() + " - INFO: Flight with id: \"" + this.id + "\" state changed to LANDING. Docking Space id is: \""
-                + dockingSpace.getId() + "\" and actualTakeoffTimeInApplicationMinutes is: " + actualTakeoffTimeInApplicationMinutes +
-                ". System time is: " + System.currentTimeMillis());
-        tryToCompleteLanding();
-        if(!flightAttributesAreOkToStayParked()){
-            System.out.println(airport.getTimeElapsedInMinutes() + " - ERROR: Flight attributes in flight with id: \"" + id + "\" were not OK to stay parked. Removing flight...");
-            tryDeleteFlight();
-            return;
+        catch(InterruptedException ex){
+            System.out.println(airport.getTimeElapsedInMinutes() + " - INTERRUPT: Flight id = " + id);
         }
-        flightState = FlightState.PARKED;
-        System.out.println(airport.getTimeElapsedInMinutes() + " - INFO: Flight with id: \"" + this.id + "\" state changed to PARKED. Docking Space id is: \""
-                + dockingSpace.getId() + "\".");
-        tryWaitForParkingStayToEnd();
-        airport.earnMoneyFromFlight(this);
-        System.out.println(airport.getTimeElapsedInMinutes() + " - INFO: Flight with id: \"" + this.id + "\" has TAKEN OFF. Money has been added to airport. Deleting Flight...");
-        tryDeleteFlight();
-        System.out.println(airport.getTimeElapsedInMinutes() + " - INFO: Flight with id: \"" + this.id + "\" deleted...");
     }
 
     private boolean flightAttributesAreOkToLand(){
@@ -169,30 +194,18 @@ public class Flight implements Runnable{
                 airport != null);
     }
 
-    private void tryToCompleteLanding(){
+    private void tryToCompleteLanding() throws InterruptedException{
         int timeToDock = timeNeededToDockInMinutes * AbstractHelper.getRealMillisecondsForOneSimulationMinute();
-        try{
-            Thread.sleep(timeToDock);
-        }
-        catch (InterruptedException ex){
-            System.out.println(airport.getTimeElapsedInMinutes() + " - ERROR: " + ex + ": "+ ex.getMessage() + " " + ex.getCause());
-        }
+        Thread.sleep(timeToDock);
     }
 
-    private void tryWaitForParkingStayToEnd(){
+    private void tryWaitForParkingStayToEnd() throws InterruptedException{
         int timeToStayParked = (predictedParkingDurationInMinutes + delayTimeInMinutes) *
                 AbstractHelper.getRealMillisecondsForOneSimulationMinute();
-        try{
-            Thread.sleep(timeToStayParked);
-        }
-        catch (InterruptedException ex){
-            System.out.println(airport.getTimeElapsedInMinutes() + " - ERROR: " + ex + ": "+ ex.getMessage() + " " + ex.getCause());
-        }
+        Thread.sleep(timeToStayParked);
     }
 
     private boolean flightAttributesAreOkToStayParked(){
-//        System.out.println("DEBUG: flightAttributesAreOkToStayParked?: id: " + id + ", flightState: " + flightState + ", time: " +
-//                (predictedParkingDurationInMinutes + delayTimeInMinutes) + ", dockingSpace: " + dockingSpace);
         return (flightState == FlightState.LANDING &&
                 predictedParkingDurationInMinutes + delayTimeInMinutes > 0 &&
                 dockingSpace != null);
@@ -202,19 +215,25 @@ public class Flight implements Runnable{
         try {
             deleteFlight();
         }
-        catch(FlightException ex){
-            System.out.println(airport.getTimeElapsedInMinutes() + " - ERROR: " + ex + ": "+ ex.getMessage() + " " + ex.getCause());
+        catch(Exception ex){
+            System.out.println(AbstractHelper.minutesToHoursMinutes(airport.getTimeElapsedInMinutes()) +
+                    " - ERROR: " + ex + ": "+ ex.getMessage() + " " + ex.getCause());
+            Platform.runLater(() -> airport.getMainWindow().logMessage(AbstractHelper.minutesToHoursMinutes(airport.getTimeElapsedInMinutes()) +
+                    " - ERROR: " + ex + ": "+ ex.getMessage() + " " + ex.getCause()));
         }
     }
 
-    private void deleteFlight() throws FlightException{
+    private void deleteFlight() throws FlightException, AirportException {
         if(this.dockingSpace != null){
             this.dockingSpace.setFlight(null);
             try {
                 this.dockingSpace.updateDockingStationAfterTakeoff();
             }
             catch (DockingStationException ex){
-                System.out.println(airport.getTimeElapsedInMinutes() + " - ERROR: " + ex + ": "+ ex.getMessage() + " " + ex.getCause());
+                System.out.println(AbstractHelper.minutesToHoursMinutes(airport.getTimeElapsedInMinutes()) +
+                        " - ERROR: " + ex + ": "+ ex.getMessage() + " " + ex.getCause());
+                Platform.runLater(() -> airport.getMainWindow().logMessage(AbstractHelper.minutesToHoursMinutes(airport.getTimeElapsedInMinutes()) +
+                        " - ERROR: " + ex + ": "+ ex.getMessage() + " " + ex.getCause()));
             }
             this.dockingSpace = null;
         }
