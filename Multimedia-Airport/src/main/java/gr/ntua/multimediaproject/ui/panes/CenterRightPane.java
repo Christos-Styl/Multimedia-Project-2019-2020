@@ -1,5 +1,6 @@
-package gr.ntua.multimediaproject.ui;
+package gr.ntua.multimediaproject.ui.panes;
 
+import gr.ntua.multimediaproject.ui.Sizer;
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -97,6 +98,11 @@ public class CenterRightPane extends GridPane {
                 a.show();
                 return;
             }
+            if("3".equals(planeType) && requiresLoadingUnloadingService){
+                Alert a = new Alert(Alert.AlertType.ERROR, "Loading and Unloading Service not available fot SINGLE_ENGINE (3) planes.");
+                a.show();
+                return;
+            }
             int predictedParkingDuration;
             try{
                 predictedParkingDuration = Integer.parseInt(predictedParkingDurationString);
@@ -108,7 +114,7 @@ public class CenterRightPane extends GridPane {
                 return;
             }
             if(predictedParkingDuration <= 0 || predictedParkingDuration > 600){
-                Alert a = new Alert(Alert.AlertType.ERROR, "Predicted parking duration in minutes must be a" +
+                Alert a = new Alert(Alert.AlertType.ERROR, "Predicted parking duration in minutes must be a " +
                         "positive integer and lower than 600 (minutes).");
                 a.show();
                 return;

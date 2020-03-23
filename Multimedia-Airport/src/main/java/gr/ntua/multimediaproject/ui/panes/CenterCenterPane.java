@@ -1,7 +1,9 @@
-package gr.ntua.multimediaproject.ui;
+package gr.ntua.multimediaproject.ui.panes;
 
 import gr.ntua.multimediaproject.dockingstations.DockingSpace;
 import gr.ntua.multimediaproject.dockingstations.DockingStation;
+import gr.ntua.multimediaproject.ui.Sizer;
+import gr.ntua.multimediaproject.ui.TopText;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -58,6 +60,7 @@ public class CenterCenterPane extends FlowPane{
             int columnCounter = 1;
             for(DockingSpace dockingSpace : dockingStation.getDockingSpaceList()) {
                 FlowPane outerSingleDockingStationPane = new FlowPane();
+                outerSingleDockingStationPane.setOrientation(Orientation.VERTICAL);
                 StackPane dockingSpaceStackPane = new StackPane();
                 Text dockingSpaceIdText = new Text(dockingSpace.getId());
                 Rectangle dockingSpaceBox = new Rectangle(20, 20);

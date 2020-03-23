@@ -280,7 +280,7 @@ public class AirportSingleton {
         return dockingStationWithMostDockingSpaces;
     }
 
-    private boolean flightCanBeServiced(Flight flight) throws AirportException{
+    private boolean flightCanBeServiced(Flight flight){
         for(DockingStation dockingStation : dockingStationList) {
             if (dockingStation.canServiceFlightType(flight.getFlightType()) &&
                     (dockingStation.getMaxLandingDurationInMinutes() >= flight.getPredictedParkingDurationInMinutes()) &&
@@ -308,7 +308,6 @@ public class AirportSingleton {
             throw new AirportException("firstAvailableDockingSpace was null despite Docking Station being listed as appropriate.");
         }
         flight.setDockingSpace(firstAvailableDockingSpace);
-        //TODO add actualTakeoffTimeInApplicationMinutes to flight
         firstAvailableDockingSpace.setFlight(flight);
         holdingFlightsList.remove(flight);
         landingOrParkedFlightsList.add(flight);
@@ -415,17 +414,6 @@ public class AirportSingleton {
             }
         }
         return flightsDepartingIn10Minutes;
-    }
-
-    public List<Flight> getDelayedFlights(){
-        List<Flight> delayedFlights = new ArrayList<>();
-        for(Flight flight : landingOrParkedFlightsList){
-            int predictedTakeoffTime = flight.getActualTakeoffTimeInApplicationMinutes() - flight.getDelayTimeInMinutes();
-            if(predictedTakeoffTime > timeElapsedInMinutes){
-                delayedFlights.add(flight);
-            }
-        }
-        return delayedFlights;
     }
 
     public void createNewFlight(String id, String city, String flightTypeString, String planeTypeString, int predictedParkingDuration,

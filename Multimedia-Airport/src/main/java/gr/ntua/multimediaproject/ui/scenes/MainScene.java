@@ -2,9 +2,9 @@ package gr.ntua.multimediaproject.ui.scenes;
 
 import gr.ntua.multimediaproject.airport.AirportSingleton;
 import gr.ntua.multimediaproject.commonutils.AbstractHelper;
-import gr.ntua.multimediaproject.ui.MainBottomPane;
-import gr.ntua.multimediaproject.ui.MainCenterPane;
-import gr.ntua.multimediaproject.ui.MainTopPane;
+import gr.ntua.multimediaproject.ui.panes.MainBottomPane;
+import gr.ntua.multimediaproject.ui.panes.MainCenterPane;
+import gr.ntua.multimediaproject.ui.panes.MainTopPane;
 import gr.ntua.multimediaproject.ui.MainWindow;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -23,7 +23,7 @@ public class MainScene extends Scene {
         borderpane.setTop(top);
         center = new MainCenterPane(this);
         borderpane.setCenter(center);
-        bottom = new MainBottomPane(this);
+        bottom = new MainBottomPane();
         borderpane.setBottom(bottom);
     }
 
@@ -61,5 +61,21 @@ public class MainScene extends Scene {
 
     public void showGates(){
         mainWindow.showGates();
+    }
+
+    public void showFlights(){
+        mainWindow.showFlights();
+    }
+
+    public void showDelayedFlights(){
+        mainWindow.showDelayedFlights();
+    }
+
+    public void showHoldingFlights(){
+        mainWindow.showHoldingFlights();
+    }
+
+    public void showNextDepartures(){
+        mainWindow.showNextDepartures();
     }
 }

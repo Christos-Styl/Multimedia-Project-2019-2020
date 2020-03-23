@@ -1,4 +1,4 @@
-AΑΑΑΑΑ,City A, 2, 3, 40
+A,City A, 2, 3, 40
 B,Atlantis,2,3, 85
 C,Atlantis,2,3, 85
 D,Atlantis,2,3, 85
@@ -21,3 +21,49 @@ T,Atlantis,2,3, 85
 U,Atlantis,2,3, 85
 V,Atlantis,2,3, 85
 W,Atlantis,2,3, 85
+A1,City A, 2, 3, 40
+B1,Atlantis,2,3, 85
+C1,Atlantis,2,3, 85
+D1,Atlantis,2,3, 85
+E1,Atlantis,2,3, 85
+F1,Atlantis,2,3, 85
+G1,Atlantis,2,3, 85
+H1,Atlantis,2,3, 85
+I1,Atlantis,2,3, 85
+J1,Atlantis,2,3, 85
+K1,Atlantis,2,3, 85
+L1,Atlantis,2,3, 85
+M1,Atlantis,2,3, 85
+N1,City A, 2, 3, 40
+O1,Atlantis,2,3, 85
+P1,Atlantis,2,3, 85
+Q1,Atlantis,2,3, 85
+R1,Atlantis,2,3, 85
+S1,City A, 2, 3, 40
+T1,Atlantis,2,3, 85
+U1,Atlantis,2,3, 85
+V1,Atlantis,2,3, 85
+W1,Atlantis,2,3, 85
+A2,City A, 2, 3, 40
+B2,Atlantis,2,3, 85
+C2,Atlantis,2,3, 85
+D2,Atlantis,2,3, 85
+E2,Atlantis,2,3, 85
+F2,Atlantis,2,3, 85
+G2,Atlantis,2,3, 85
+H2,Atlantis,2,3, 85
+I2,Atlantis,2,3, 85
+J2,Atlantis,2,3, 85
+K2,Atlantis,2,3, 85
+L2,Atlantis,2,3, 85
+M2,Atlantis,2,3, 85
+N2,City A, 2, 3, 40
+O2,Atlantis,2,3, 85
+P2,Atlantis,2,3, 85
+Q2,Atlantis,2,3, 85
+R2,Atlantis,2,3, 85
+S2,City A, 2, 3, 40
+T2,Atlantis,2,3, 85
+U2,Atlantis,2,3, 85
+V2,Atlantis,2,3, 85
+W2,Atlantis,2,3, 85

@@ -1,5 +1,6 @@
 package gr.ntua.multimediaproject.ui.scenes;
 
+import gr.ntua.multimediaproject.commonutils.AbstractHelper;
 import gr.ntua.multimediaproject.dockingstations.DockingSpace;
 import gr.ntua.multimediaproject.dockingstations.DockingStation;
 import gr.ntua.multimediaproject.ui.MainWindow;
@@ -18,20 +19,20 @@ public class GatesScene extends Scene {
     public GatesScene(StackPane stackPane, double width, double height, MainWindow mainWindow){
         super(stackPane, width, height);
         this.mainWindow = mainWindow;
-        stackPane.setMinSize(Sizer.getDetailsPopUpWidth(), Sizer.getDetailsPopUpHeight());
-        stackPane.setMaxSize(Sizer.getDetailsPopUpWidth(), Sizer.getDetailsPopUpHeight());
+        stackPane.setMinSize(Sizer.getGatesDetailsPopUpWidth(), Sizer.getGatesDetailsPopUpHeight());
+        stackPane.setMaxSize(Sizer.getGatesDetailsPopUpWidth(), Sizer.getGatesDetailsPopUpHeight());
         stackPane.setBorder(new Border(new BorderStroke(Color.BLACK,
                 BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
         ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setMinSize(Sizer.getDetailsPopUpWidth(), Sizer.getDetailsPopUpHeight());
-        scrollPane.setMaxSize(Sizer.getDetailsPopUpWidth(), Sizer.getDetailsPopUpHeight());
+        scrollPane.setMinSize(Sizer.getGatesDetailsPopUpWidth(), Sizer.getGatesDetailsPopUpHeight());
+        scrollPane.setMaxSize(Sizer.getGatesDetailsPopUpWidth(), Sizer.getGatesDetailsPopUpHeight());
         scrollPane.setHbarPolicy(javafx.scene.control.ScrollPane.ScrollBarPolicy.ALWAYS);
 
         gridPane = new GridPane();
         gridPane.setVgap(10);
         gridPane.setHgap(50);
-        gridPane.setMinWidth(Sizer.getDetailsPopUpWidth());
-        gridPane.setMaxWidth(Sizer.getDetailsPopUpWidth());
+        gridPane.setMinWidth(Sizer.getGatesDetailsPopUpWidth());
+        gridPane.setMaxWidth(Sizer.getGatesDetailsPopUpWidth());
         gridPane.setBorder(new Border(new BorderStroke(Color.BLACK,
                 BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
         scrollPane.setContent(gridPane);
@@ -59,7 +60,8 @@ public class GatesScene extends Scene {
                 stateText.setFill(stateText.getText().equals("Empty") ? Color.GREEN : Color.RED);
                 Text flightIdText = new Text(dockingSpace.getFlight() == null ? "-" : dockingSpace.getFlight().getId());
                 Text predictedDepartureTimeText = new Text(dockingSpace.getFlight() == null ? "-" :
-                        Integer.toString(dockingSpace.getFlight().getActualTakeoffTimeInApplicationMinutes() - dockingSpace.getFlight().getDelayTimeInMinutes()));
+                        AbstractHelper.minutesToHoursMinutes(
+                                dockingSpace.getFlight().getActualTakeoffTimeInApplicationMinutes() - dockingSpace.getFlight().getDelayTimeInMinutes()));
                 GridPane.setConstraints(idText, 0, rowCounter);
                 GridPane.setConstraints(stateText, 1, rowCounter);
                 GridPane.setConstraints(flightIdText, 2, rowCounter);

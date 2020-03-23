@@ -2,8 +2,9 @@ package gr.ntua.multimediaproject.ui;
 
 import gr.ntua.multimediaproject.airport.AirportSingleton;
 import gr.ntua.multimediaproject.commonutils.AbstractHelper;
-import gr.ntua.multimediaproject.ui.scenes.GatesScene;
-import gr.ntua.multimediaproject.ui.scenes.MainScene;
+import gr.ntua.multimediaproject.ui.popups.ConfirmPopUp;
+import gr.ntua.multimediaproject.ui.popups.DetailsPopUp;
+import gr.ntua.multimediaproject.ui.scenes.*;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.BorderPane;
@@ -15,6 +16,10 @@ public class MainWindow extends Stage {
     private String scenarioId;
     MainScene mainScene;
     GatesScene gatesScene;
+    FlightsScene flightsScene;
+    DelayedFlightsScene delayedFlightsScene;
+    HoldingFlightsScene holdingFlightsScene;
+    NextDeparturesScene nextDeparturesScene;
 
     public MainWindow(String title, AirportSingleton airport){
         this.airport = airport;
@@ -27,7 +32,11 @@ public class MainWindow extends Stage {
             closeStage();
         });
         mainScene = new MainScene(new BorderPane(), Sizer.getWindowWidth(), Sizer.getWindowHeight(), this);
-        gatesScene = new GatesScene(new StackPane(), Sizer.getDetailsPopUpWidth(), Sizer.getDetailsPopUpHeight(), this);
+        gatesScene = new GatesScene(new StackPane(), Sizer.getGatesDetailsPopUpWidth(), Sizer.getGatesDetailsPopUpHeight(), this);
+        flightsScene = new FlightsScene(new StackPane(), Sizer.getFlightsDetailsPopUpWidth(), Sizer.getFlightsDetailsPopUpHeight(), this);
+        delayedFlightsScene = new DelayedFlightsScene(new StackPane(), Sizer.getFlightsDetailsPopUpWidth(), Sizer.getFlightsDetailsPopUpHeight(), this);
+        holdingFlightsScene = new HoldingFlightsScene(new StackPane(), Sizer.getFlightsDetailsPopUpWidth(), Sizer.getFlightsDetailsPopUpHeight(), this);
+        nextDeparturesScene = new NextDeparturesScene(new StackPane(), Sizer.getFlightsDetailsPopUpWidth(), Sizer.getFlightsDetailsPopUpHeight(), this);
         setScene(mainScene);
         System.out.println("TEST TEST: " + airport);
     }
@@ -41,13 +50,14 @@ public class MainWindow extends Stage {
     }
 
     public void closeStage(){
-        boolean answer = ConfirmBox.display("Title", "Are you sure you want to close the application?");
+        boolean answer = ConfirmPopUp.display("Title", "Are you sure you want to close the application?");
         if(answer){
             if(airport != null){
                 airport.clearAirport();
             }
             System.out.println("INFO: AirportGui closing...");
-            this.close();
+            Platform.exit();
+//            this.close();
         }
     }
 
@@ -80,6 +90,10 @@ public class MainWindow extends Stage {
     public void refreshGui(){
         mainScene.refreshScene();
         gatesScene.refreshGatesScene();
+        flightsScene.refreshFlightsScene();
+        delayedFlightsScene.refreshDelayedFlightsScene();
+        holdingFlightsScene.refreshHoldingFlightsScene();
+        nextDeparturesScene.refreshNextDeparturesScene();
     }
 
     public void loadScenario(String scenarioId){
@@ -91,11 +105,22 @@ public class MainWindow extends Stage {
     }
 
     public void showGates(){
-        GatesPopUp.display(gatesScene);
+        DetailsPopUp.display(gatesScene, "Gates Details");
     }
 
-    public void focusMainScene(){
-        setScene(mainScene);
+    public void showFlights(){
+        DetailsPopUp.display(flightsScene, "Flights Details");
     }
 
+    public void showDelayedFlights(){
+        DetailsPopUp.display(delayedFlightsScene, "Delayed Flights Details");
+    }
+
+    public void showHoldingFlights(){
+        DetailsPopUp.display(holdingFlightsScene, "Holding Flights Details");
+    }
+
+    public void showNextDepartures(){
+        DetailsPopUp.display(nextDeparturesScene, "Next Departures Details");
+    }
 }

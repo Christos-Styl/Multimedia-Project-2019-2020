@@ -1,4 +1,4 @@
-package gr.ntua.multimediaproject.ui;
+package gr.ntua.multimediaproject.ui.popups;
 
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -11,10 +11,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
-public class LoadWindow {
+public class LoadPopUp {
     static String scenarioId;
 
     public static String display(String title, String message) {

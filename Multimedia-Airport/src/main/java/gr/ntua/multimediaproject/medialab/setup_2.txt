@@ -1,0 +1,11 @@
+A,City A, 2, 3, 40
+B,Ath,1,2, 20
+C,Thess,1,2, 10
+D,NY,2,2, 10
+E,Argo,2,2, 35
+F,Sparta,2,1, 45
+G,Pelion,1,1, 10
+H,Lerna,3,1, 10
+I,Stimfalis,2,1, 10
+J,Naxos,2,1, 10
+K,Delos,3,1, 600

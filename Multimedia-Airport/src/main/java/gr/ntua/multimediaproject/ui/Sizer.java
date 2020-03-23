@@ -13,8 +13,11 @@ public class Sizer {
     private static final int centerCenterPaneWidth = 700;
     private static final int centerRightPaneWidth = 300;
 
-    private static final int detailsPopUpWidth = 700;
-    private static final int detailsPopUpHeight = 500;
+    private static final int gatesDetailsPopUpWidth = 700;
+    private static final int gatesDetailsPopUpHeight = 500;
+
+    private static final int flightsDetailsPopUpWidth = 850;
+    private static final int flightsDetailsPopUpHeight = 500;
 
     public static int getMainTopPaneHeight() {
         return mainTopPaneHeight;
@@ -44,11 +47,19 @@ public class Sizer {
         return centerRightPaneWidth;
     }
 
-    public static int getDetailsPopUpWidth() {
-        return detailsPopUpWidth;
+    public static int getGatesDetailsPopUpWidth() {
+        return gatesDetailsPopUpWidth;
     }
 
-    public static int getDetailsPopUpHeight() {
-        return detailsPopUpHeight;
+    public static int getGatesDetailsPopUpHeight() {
+        return gatesDetailsPopUpHeight;
+    }
+
+    public static int getFlightsDetailsPopUpWidth() {
+        return flightsDetailsPopUpWidth;
+    }
+
+    public static int getFlightsDetailsPopUpHeight() {
+        return flightsDetailsPopUpHeight;
     }
 }

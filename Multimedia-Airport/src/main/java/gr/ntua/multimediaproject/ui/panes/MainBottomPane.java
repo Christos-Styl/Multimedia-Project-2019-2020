@@ -1,5 +1,6 @@
-package gr.ntua.multimediaproject.ui;
+package gr.ntua.multimediaproject.ui.panes;
 
+import gr.ntua.multimediaproject.ui.Sizer;
 import gr.ntua.multimediaproject.ui.scenes.MainScene;
 import javafx.geometry.Orientation;
 import javafx.scene.control.Button;
@@ -10,12 +11,10 @@ import javafx.scene.text.Text;
 
 
 public class MainBottomPane extends FlowPane {
-    private MainScene mainScene;
     private GridPane gridPane;
     private int gridRow;
 
-    public MainBottomPane(MainScene mainScene) {
-        this.mainScene = mainScene;
+    public MainBottomPane() {
         gridRow = 0;
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setMinSize(Sizer.getWindowWidth() - 80,Sizer.getMainBottomPaneHeight());

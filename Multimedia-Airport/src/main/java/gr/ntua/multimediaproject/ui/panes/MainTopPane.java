@@ -1,7 +1,10 @@
-package gr.ntua.multimediaproject.ui;
+package gr.ntua.multimediaproject.ui.panes;
 
 import gr.ntua.multimediaproject.commonutils.AbstractHelper;
 import gr.ntua.multimediaproject.dockingstations.DockingStation;
+import gr.ntua.multimediaproject.ui.AirportMenuBar;
+import gr.ntua.multimediaproject.ui.Sizer;
+import gr.ntua.multimediaproject.ui.TopText;
 import gr.ntua.multimediaproject.ui.scenes.MainScene;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -45,7 +48,6 @@ public class MainTopPane extends FlowPane{
                 mainScene.getAirport().getFlightsDepartingIn10Minutes().size() : "--"));
         totalMoneyEarnedText.setText("Total Money: " + (mainScene.getAirport() != null ?
                 mainScene.getAirport().getTotalMoneyEarned() : "--"));
-        //TODO fix time
         timeElapsedInMinutesText.setText("Time elapsed: " + (mainScene.getAirport() != null ?
                 AbstractHelper.minutesToHoursMinutes(mainScene.getAirport().getTimeElapsedInMinutes()) : "--"));
         scenarioIdText.setText("Scenario ID: " + mainScene.getScenarioId());
@@ -71,5 +73,21 @@ public class MainTopPane extends FlowPane{
 
     public void showGates(){
         mainScene.showGates();
+    }
+
+    public void showFlights(){
+        mainScene.showFlights();
+    }
+
+    public void showDelayedFlights(){
+        mainScene.showDelayedFlights();
+    }
+
+    public void showHoldingFlights(){
+        mainScene.showHoldingFlights();
+    }
+
+    public void showNextDepartures(){
+        mainScene.showNextDepartures();
     }
 }

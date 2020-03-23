@@ -2,10 +2,8 @@ package gr.ntua.multimediaproject.application;
 
 import gr.ntua.multimediaproject.airport.AirportSingleton;
 import gr.ntua.multimediaproject.airport.exceptions.AirportException;
-import gr.ntua.multimediaproject.ui.AirportGui;
-import javafx.stage.Stage;
 
-public class Program {
+public class TestProgram {
     public static void main(String[] args){
         AirportSingleton airport = AirportSingleton.getInstance();
 //        airport.clearAirport();

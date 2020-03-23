@@ -1,6 +1,7 @@
-package gr.ntua.multimediaproject.ui;
+package gr.ntua.multimediaproject.ui.panes;
 
 import gr.ntua.multimediaproject.airport.AirportSingleton;
+import gr.ntua.multimediaproject.ui.Sizer;
 import gr.ntua.multimediaproject.ui.scenes.MainScene;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;

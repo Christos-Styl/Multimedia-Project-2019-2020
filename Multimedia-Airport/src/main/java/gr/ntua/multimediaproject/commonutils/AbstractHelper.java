@@ -9,7 +9,7 @@ public abstract class AbstractHelper {
     }
 
     public static int getRealMillisecondsForOneSimulationMinute() {
-        return 200;
+        return 2000;
     }
 
     public static String minutesToHoursMinutes(int minutes){

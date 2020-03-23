@@ -1,5 +1,7 @@
 package gr.ntua.multimediaproject.ui;
 
+import gr.ntua.multimediaproject.ui.panes.MainTopPane;
+import gr.ntua.multimediaproject.ui.popups.LoadPopUp;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -47,10 +49,14 @@ public class AirportMenuBar extends MenuBar {
     private void setDetailsMenuItemsOnAction(MenuItem gates, MenuItem flights, MenuItem delayed, MenuItem holding,
                                              MenuItem nextDepartures){
         gates.setOnAction(event -> top.showGates());
+        flights.setOnAction(event -> top.showFlights());
+        delayed.setOnAction(event -> top.showDelayedFlights());
+        holding.setOnAction(event -> top.showHoldingFlights());
+        nextDepartures.setOnAction(event -> top.showNextDepartures());
     }
 
     private void loadScenario(){
-        String scenarioId = LoadWindow.display("Load Scenario ID", "Input a scenario ID below.");
+        String scenarioId = LoadPopUp.display("Load Scenario ID", "Input a scenario ID below.");
         if (scenarioId != null) {
             top.loadScenario(scenarioId);
         }
